@@ -7,3 +7,7 @@ resource "aws_instance" "test-dev"{
     ami=" ami-04bf6dcdc9ab498ca"
     
 }
+resource "aws_instance" "test-stg"{
+    instnace_type="t2.micro"
+    ami=" ami-04bf6dcdc9ab498ca"
+}
