@@ -1,5 +1,6 @@
 provider "aws" {
   region = "us-east-1"
+  availblitiy_zone="us-west-2a"
 
 }
 resource "aws_instance" "test-dev" {
