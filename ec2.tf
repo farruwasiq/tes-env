@@ -7,6 +7,7 @@ resource "aws_instance" "test-dev" {
   instance_type = "t2.nano"
   ami           = " ami-04bf6dcdc9ab498ca"
   tags="tes-dev"
+  name ="tes-dev"
 
 }
 resource "aws_instance" "test-stg" {
