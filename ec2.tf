@@ -3,7 +3,7 @@ provider "aws" {
 
 }
 resource "aws_instance" "test-dev" {
-  instance_type = "t2.micro"
+  instance_type = "t2.nano"
   ami           = " ami-04bf6dcdc9ab498ca"
 
 }
