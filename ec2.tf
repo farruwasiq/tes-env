@@ -8,7 +8,7 @@ resource "aws_instance" "test-dev" {
 
 }
 resource "aws_instance" "test-stg" {
-  instance_type = "t2.micro"
+  instance_type = "t2.nano"
   ami           = " ami-04bf6dcdc9ab498ca"
 }
 resource "aws_security_group" "allow_tls" {
