@@ -1,26 +1,43 @@
-resource "aws_vpc" "main_vpc" {
-  cidr_block       = var.vpc_cidr
+resource "aws_vpc" "dev_vpc" {
+  cidr_block       = var.main_vpc_cidr
   instance_tenancy = "default"
   tags = {
-    name = "main_vpc"
-  }
+    Name = "main_vpc"
 
+  }
 }
-resource "aws_subnet" "public_subnet" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = var.public_subnet
-  availability_zone = "us-east-1a"
-  tags = {
-    name = "public_subnet"
-  }
 
+resource "aws_subnet" "dev_subnet_public_1a" {
+  vpc_id            = local.vpc_id
+  availability_zone = "us-east-1a"
+  cidr_block        = var.public_subnet_1a_cidr
+  tags = {
+    name = "dev-subnet-public-1a"
+  }
 }
-resource "aws_subnet" "private_subnet" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = var.private_subnet
-  availability_zone = "us-east-1a"
-  tags = {
-    name = "private_subnet"
-  }
+resource "aws_subnet" "dev_subnet_public_1b" {
+  vpc_id            = local.vpc_id
+  availability_zone = "us-east-1b"
 
+  cidr_block = var.public_subnet_1b_cidr
+  tags = {
+    name = "dev-subnet-public-1b"
+  }
+}
+resource "aws_subnet" "dev_subnet_private_1a" {
+  vpc_id            = local.vpc_id
+  availability_zone = "us-east-1a"
+  cidr_block        = var.private_subnet_1a_cidr
+  tags = {
+    name = "dev-subnet-private-1a"
+  }
+}
+resource "aws_subnet" "dev_subnet_private_1b" {
+  vpc_id            = local.vpc_id
+  availability_zone = "us-east-1b"
+
+  cidr_block = var.private_subnet_1b_cidr
+  tags = {
+    name = "dev-subent-private-1b"
+  }
 }

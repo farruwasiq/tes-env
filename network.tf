@@ -1,51 +1,38 @@
 resource "aws_internet_gateway" "dev_igw" {
-  vpc_id = aws_vpc.main_vpc.id
+  vpc_id = local.vpc_id
   tags = {
-    name = "dev_igw"
+    name = "dev-igw"
   }
 
 }
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.main_vpc.id
-
+resource "aws_route_table" "dev_public_rt" {
+  vpc_id = local.vpc_id
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.dev_igw.id
+    cidr_block = "0.0.0.0/0"                     //since it is public subnet we are routing traffic to everywhere
+    gateway_id = aws_internet_gateway.dev_igw.id //route table uses this igw to reach internet
 
   }
-}
-
-resource "aws_route_table_association" "public_rt_subnet" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.public_rt.id
-
-}
-resource "aws_eip" "nat_eip" {
-  vpc = true
-
-}
-resource "aws_nat_gateway" "public_nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_subnet.id
-
-}
-output "nat_gateway_ip" {
-  value = aws_eip.nat_eip.public_ip
-
-
-}
-
-resource "aws_route_table" "private_rt" {
-  vpc_id = aws_vpc.main_vpc.id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.public_nat.id
-
+  tags = {
+    name = "dev-public-rt"
   }
-
 }
-resource "aws_route_table_association" "privat_rt_subnet" {
-  subnet_id      = aws_subnet.private_subnet.id
-  route_table_id = aws_route_table.private_rt.id
+resource "aws_route_table_association" "dev_public_subnet_1a_rt" {
+  subnet_id      = aws_subnet.dev_subnet_public_1a.id
+  route_table_id = aws_route_table.dev_public_rt.id
+}
+resource "aws_route_table" "dev_private_rt" {
+  vpc_id = local.vpc_id
+  #cidr="10.212.210.64/27"
+  /*route {
+    cidr_block = "0.0.0.0/0"                     //since it is public subnet we are routing traffic to everywhere
+    gateway_id = aws_internet_gateway.dev-igw.id //route table uses this igw to reach internet
 
+  }*/
+  tags = {
+    name = "dev-private-rt"
+  }
+}
+resource "aws_route_table_association" "dev_private_subnet_1a_rt" {
+  subnet_id      = aws_subnet.dev_subnet_private_1a.id
+  route_table_id = aws_route_table.dev_private_rt.id
 }
