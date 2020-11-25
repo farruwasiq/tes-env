@@ -1,4 +1,4 @@
-resource "aws_instance" "dev_tes_cm1" {//this is instance in private
+resource "aws_instance" "dev_tes_cm1" {//this is instance in private subnet
   subnet_id       = aws_subnet.private_subnet.id
   instance_type   = var.instance_type["cm1"]
   vpc_security_group_ids = ["${aws_security_group.my_sg.id}"]
