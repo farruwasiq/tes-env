@@ -63,7 +63,7 @@ attribute {
     type = "S"
   }
 }
-resource "aws_s3_bucket" "buffer" {
+resource "aws_s3_bucket" "buffer" {//creating bucket
     bucket="buffer-jenkins"
     acl="private"
     versioning {
