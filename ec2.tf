@@ -12,8 +12,8 @@ resource "aws_instance" "jenkins-test" {//creaing instance
 
   
 }
-resource "aws_s3_bucket" "tf_state"{//creaitng bucket
-    bucket="my_tf_state"
+resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket
+    bucket="my-tf-state-mine-jenkins"
     acl="private"
     versioning {
       enabled=true
@@ -23,4 +23,43 @@ resource "aws_s3_bucket" "tf_state"{//creaitng bucket
     Environment = "Dev"
     }
 
+}
+/*
+# create a dynamodb table for locking the state file
+resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
+  name = "terraform-state-lock-dynamo"
+  hash_key = "LockID"
+  read_capacity = 20
+  write_capacity = 20
+ 
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+ 
+  tags {
+    Name = "DynamoDB Terraform State Lock Table"
+  }
+}
+*/
+terraform {
+    backend "s3" {
+
+        encrypt = true
+        bucket = "my-tf-state-mine-jenkins"
+        key = "terraform"
+        region = "us-east-1"
+        dynamodb_table = "terraform-lock"
+        }
+}
+resource "aws_dynamodb_table" "terraform_state_lock" {//creating dyanmo db table
+
+    name           = "terraform-lock"
+    read_capacity  = 5
+    write_capacity = 5
+    hash_key       = "LockID"
+attribute {
+    name = "LockID"
+    type = "S"
+  }
 }
