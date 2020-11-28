@@ -63,3 +63,16 @@ attribute {
     type = "S"
   }
 }
+resource "aws_s3_bucket" "buffer" {
+    bucket="buffer-jenkins"
+    acl="private"
+    versioning {
+      enabled=true
+    }
+    tags = {
+    Name        = "My bucket"
+    Environment = "prod"
+    }
+
+  
+}
