@@ -81,17 +81,17 @@ resource "aws_instance" "my-instance" {
 	ami="ami-0885b1f6bd170450c"
 	instance_type = "t2.nano"
 	key_name = "k8-leo"
-	user_data = << EOF
-		#! /bin/bash
-                sudo apt-get update
-		sudo apt-get install -y apache2
-		sudo systemctl start apache2
-		sudo systemctl enable apache2
-		echo "<h1>Deployed via Terraform</h1>" | sudo tee /var/www/html/index.html
-	EOF
-	tags = {
-		Name = "Terraform"	
-		Batch = "5AM"
-	}
+	user_data     = <<-EOF
+                  #!/bin/bash
+                  sudo su
+                  apt-get update
+                  sudo -y install httpd
+                  echo "<p> My Instance! </p>" >> /var/www/html/index.html
+                  sudo systemctl enable httpd
+                  sudo systemctl start httpd
+                  EOF
 }
+	
+
+
 
