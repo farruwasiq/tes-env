@@ -11,7 +11,7 @@ resource "aws_instance" "jenkins-test" {
 
   
 }
-resource "aws_s3_bucket" "tf_state"{
+resource "aws_s3_bucket" "tf_state"{//creaitng bucket
     bucket="my_tf_state"
     acl="public"
     versioning {
