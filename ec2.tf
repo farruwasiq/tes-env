@@ -53,6 +53,7 @@ terraform {
         dynamodb_table = "terraform-lock"
         }
 }
+/*
 resource "aws_dynamodb_table" "terraform_state_lock" {//creating dyanmo db table
 
     name           = "terraform-lock"
@@ -64,6 +65,7 @@ attribute {
     type = "S"
   }
 }
+*/
 resource "aws_s3_bucket" "buffer" {//creating bucket
     bucket="buffer-jenkins"
     acl="private"
