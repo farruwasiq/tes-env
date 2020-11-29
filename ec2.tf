@@ -13,7 +13,7 @@ resource "aws_instance" "jenkins-test" {//creaing instance
 
   
 }
-resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket
+resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket adf
     bucket="my-tf-state-mine-jenkins-newaws"
     acl="private"
     versioning {
