@@ -4,7 +4,7 @@ provider "aws"{
 }
 resource "aws_instance" "jenkins-test" {//creaing instance
     ami="ami-0885b1f6bd170450c"
-    key_name="k8"
+    key_name="k8-leo"
     
     instance_type="t2.nano"
     tags={
@@ -79,6 +79,7 @@ resource "aws_s3_bucket" "buffer" {//creating bucket
 
   
 }
+/*
 resource "aws_instance" "my-instance" {
 	ami="ami-0885b1f6bd170450c"
 	instance_type = "t2.nano"
@@ -95,5 +96,5 @@ resource "aws_instance" "my-instance" {
 }
 	
 
-
+*/
 
