@@ -14,7 +14,7 @@ resource "aws_instance" "jenkins-test" {//creaing instance
 
   
 }
-/*
+*/
 resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket adf
     bucket="my-tf-state-mine-jenkins"
     acl="private"
@@ -89,7 +89,7 @@ resource "aws_instance" "my-instance" {
 }
 	
 
-*/
+
 resource "aws_s3_bucket" "personal"{
     bucket="my-tf-state-mine-jenkins-terraformbackup"
     acl="private"
@@ -102,12 +102,13 @@ resource "aws_s3_bucket" "personal"{
     }
 
 }
+*/
 
 terraform {
     backend "s3" {
 
         encrypt = true
-        bucket = "my-tf-state-mine-jenkins-terraformbackup"
+        bucket = "my-tf-state-mine-jenkins"
         key = "terraform.tfstate"
         region = "us-east-1"
         
