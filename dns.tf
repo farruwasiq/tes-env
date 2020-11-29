@@ -10,7 +10,7 @@ resource "aws_route53_record" "server-1-record"{
     records=["18.212.52.55"]
 
 }
-resource "aws_route53_record" "www-record"{
+resource "aws_route53_record" "www-record"{//adding this domain to new aws console
     zone_id=aws_route53_zone.my_zone.id
     name="www.farruwasiq.tk"
     type="A"
