@@ -14,7 +14,7 @@ resource "aws_instance" "jenkins-test" {//creaing instance
 
   
 }
-
+*/
 resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket adf
     bucket="my-tf-state-mine-jenkins"
     acl="private"
@@ -109,9 +109,14 @@ terraform {
 
         encrypt = true
         bucket = "my-tf-state-mine-jenkins"
-        key = "terraform.tfstate"
+        key = "myapp/dev/terraform.tfstate"
         region = "us-east-1"
         
         }
+}
+resource "aws_s3_bucket" "tem"{
+    bucket="farhan-temp-files"
+    acl="private"
+
 }
 
