@@ -2,6 +2,7 @@ provider "aws"{
     region="us-east-1"
     
 }
+/*
 resource "aws_instance" "jenkins-test" {//creaing instance
     ami="ami-0885b1f6bd170450c"
     key_name="k8-leo"
@@ -44,16 +45,7 @@ resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
   }
 }
 */
-terraform {
-    backend "s3" {
 
-        encrypt = true
-        bucket = "my-tf-state-mine-jenkins-newaws"
-        key = "terraform.tfstate"
-        region = "us-east-1"
-        dynamodb_table = "terraform-lock"
-        }
-}
 /*
 resource "aws_dynamodb_table" "terraform_state_lock" {//creating dyanmo db table
 
@@ -98,4 +90,27 @@ resource "aws_instance" "my-instance" {
 	
 
 */
+resource "aws_s3_bucket" "personal"{
+    bucket="my-tf-state-mine-jenkins-terraformbackup"
+    acl="private"
+    versioning {
+      enabled=true
+    }
+    tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+    }
+
+}
+/*
+terraform {
+    backend "s3" {
+
+        encrypt = true
+        bucket = "my-tf-state-mine-jenkins-newaws"
+        key = "terraform.tfstate"
+        region = "us-east-1"
+        dynamodb_table = "terraform-lock"
+        }
+}
 
