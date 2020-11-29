@@ -42,7 +42,7 @@ resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
     Name = "DynamoDB Terraform State Lock Table"
   }
 }
-
+*/
 terraform {
     backend "s3" {
 
