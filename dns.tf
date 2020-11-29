@@ -1,5 +1,5 @@
 resource "aws_route53_zone" "my_zone"{
-    name="farruwasiq.tk"
+    name=var.domain
 }
 
 resource "aws_route53_record" "server-1-record"{

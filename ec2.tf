@@ -48,7 +48,7 @@ terraform {
 
         encrypt = true
         bucket = "my-tf-state-mine-jenkins"
-        key = "terraform"
+        key = "terraform.tfstate"
         region = "us-east-1"
         dynamodb_table = "terraform-lock"
         }
