@@ -14,7 +14,7 @@ resource "aws_instance" "jenkins-test" {//creaing instance
   
 }
 resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket
-    bucket="my-tf-state-mine-jenkins"
+    bucket="my-tf-state-mine-jenkins-newaws"
     acl="private"
     versioning {
       enabled=true
@@ -47,7 +47,7 @@ terraform {
     backend "s3" {
 
         encrypt = true
-        bucket = "my-tf-state-mine-jenkins"
+        bucket = "my-tf-state-mine-jenkins-newaws"
         key = "terraform.tfstate"
         region = "us-east-1"
         dynamodb_table = "terraform-lock"
