@@ -13,8 +13,9 @@ resource "aws_instance" "jenkins-test" {//creaing instance
 
   
 }
+/*
 resource "aws_s3_bucket" "tf-state-mine"{//creaitng bucket adf
-    bucket="my-tf-state-mine-jenkins-newaws"
+    bucket="my-tf-state-mine-jenkins"
     acl="private"
     versioning {
       enabled=true
@@ -42,7 +43,7 @@ resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
     Name = "DynamoDB Terraform State Lock Table"
   }
 }
-
+*/
 terraform {
     backend "s3" {
 
