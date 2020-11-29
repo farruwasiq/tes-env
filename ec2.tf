@@ -102,15 +102,15 @@ resource "aws_s3_bucket" "personal"{
     }
 
 }
-/*
+
 terraform {
     backend "s3" {
 
         encrypt = true
-        bucket = "my-tf-state-mine-jenkins-newaws"
+        bucket = "my-tf-state-mine-jenkins-terraformbackup"
         key = "terraform.tfstate"
         region = "us-east-1"
-        dynamodb_table = "terraform-lock"
+        
         }
 }
 
