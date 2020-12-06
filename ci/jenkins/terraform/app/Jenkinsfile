@@ -1,0 +1,148 @@
+@Library('inf-ci-tools')_
+
+import com.lululemon.tfe.TfePipeline
+
+
+/********** CONSTANTS **********/
+
+// Name of the application as used in the other variables
+def APP_NAME = "tes"
+
+// path from the terraform dir to this applications workspace.
+def TFE_APP_PATH = "app"
+
+// The Major, and minor portions of the version for the artifact
+def BASE_VERSION = "0.1"
+
+// Put name of slack channel there.  Remember to create a credentials id named id-slack-token-<slackchannel_name>
+def SLACK_CHANNEL = ""
+
+// True if terraform 0.12 otherwise 0.11.13
+def TERRAFORM_0_12 = true
+
+// AWS Account for Vault AWS secrets backend path 
+def NPD_AWS_ACCOUNT_ID = "869080716855"
+def PRD_AWS_ACCOUNT_ID = "019022179057"
+
+// Prefix of the credential id of the Vault AWS Secrets backend approle for generating the AWS keys
+// The postfix will be prd for env prd and npd for all other env values.
+def APPROLE_CREDID = "id-${NPD_AWS_ACCOUNT_ID}-credentials-approle"
+
+// Jenkins Credentials ID for artifactory
+def ARTIFACTORY_CRED_ID = "id-artifactory-svc-${APP_NAME}-ci"
+
+def ARTIFACOTRY_REPO = APP_NAME
+
+def GIT_CRED_ID = "id-${APP_NAME}-env-git-deploy-key"
+
+/********** Input Parameters from Jenkins **********/
+
+// Parameter that can be use to skip terraform.
+SKIP_TERRAFORM = null
+if (env.skip_terraform && env.skip_terraform == 'true') {
+  SKIP_TERRAFORM = true
+} else {
+  SKIP_TERRAFORM = false
+}
+
+// If artifact version is defined then we will deploy from artifact
+IS_FROM_ARTIFACT = null
+if (env.artifactVersion) {
+  IS_FROM_ARTIFACT = true 
+} else {
+  IS_FROM_ARTIFACT = false
+}
+
+// If this is true and IS_FROM_ARTIFACT is false then we will create an artifact after a successful deploy.
+IS_CREATE_ARTIFACT = null
+if (env.create_artifact && env.create_artifact == 'true') {
+  IS_CREATE_ARTIFACT = true 
+} else {
+  IS_CREATE_ARTIFACT = false
+}
+
+// Specifying a plan_branch parameter will trigger a terraform plan on the specified branch.
+IS_TF_PLAN = false
+IS_BRANCH = false
+GIT_BRANCH = ""
+if (params.plan_branch != null) {
+    IS_TF_PLAN = true
+    IS_BRANCH = true
+    GIT_BRANCH = params.plan_branch
+} else if (params.branch != null) {
+    IS_BRANCH = true
+    GIT_BRANCH = params.branch
+}
+
+TfePipeline thisPipeline = null
+
+
+pipeline {
+    agent { node { label 'tools02' } }
+    stages {
+        stage ('Git Branch Checkout') {
+            when { expression { return IS_BRANCH } }
+            steps {
+                git branch: GIT_BRANCH,
+                    credentialsId: GIT_CRED_ID,
+                    url: env.GIT_URL
+            }
+        }
+        stage( 'Inject TFE Pipeline') {
+            steps {
+                script {
+                    thisPipeline = new TfePipeline(this, TFE_APP_PATH, params.env, SLACK_CHANNEL)
+                    
+                    def vault_Path_env = "npd"
+                    def VAULT_PATH_ACCOUNT =  "${NPD_AWS_ACCOUNT_ID}"
+
+                    def realEnv = params.env
+
+                    def index = params.env.lastIndexOf('-')
+                    if( index > -1 ) {
+                        realEnv = params.env.substring(index+1)
+                    }
+                     
+                    if( params.env[-3..-1] == "prd" ) {
+                        VAULT_PATH_ACCOUNT = "${PRD_AWS_ACCOUNT_ID}"
+                        vault_Path_env     = "prd"
+                    }
+
+                    if( APPROLE_CREDID != "" && VAULT_PATH_ACCOUNT != "") {
+                        thisPipeline.awsVaultAppRoleCredID = "id-${VAULT_PATH_ACCOUNT}-credentials-approle"
+                        thisPipeline.awsVaultPath = "infra-${vault_Path_env}-${VAULT_PATH_ACCOUNT}-aws/creds/terraform"
+                    }
+
+                    if( TERRAFORM_0_12 ) {
+                        thisPipeline.terraformVersion = "Terraform-0.12-latest"
+                    }
+
+                    if ( IS_TF_PLAN ) {
+                         thisPipeline.injectTfePlanOnlyPipeline() 
+                    }
+                    else if( IS_FROM_ARTIFACT ) {
+                        thisPipeline.injectTfePipelineFromArtifact("${ARTIFACOTRY_REPO}/lulu/terraform/${TFE_APP_PATH}", ARTIFACTORY_CRED_ID, env.artifactVersion) 
+                    }
+                    else if( IS_CREATE_ARTIFACT ) {
+                        thisPipeline.injectTfePipelineToArtifact("${ARTIFACOTRY_REPO}/lulu/terraform/${TFE_APP_PATH}", ARTIFACTORY_CRED_ID, BASE_VERSION)
+                    }
+                    else {
+                        thisPipeline.injectTfePlanApplyPipeline()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script{
+                if( thisPipeline != null) {
+                    thisPipeline.sendPipelineResultToSlack( currentBuild.currentResult )
+                }
+            }
+        }
+        cleanup {
+            deleteDir() /* clean up the workspace */    
+        }
+    }
+}

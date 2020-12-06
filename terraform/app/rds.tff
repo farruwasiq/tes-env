@@ -1,0 +1,48 @@
+locals {
+  db_identifier = join("-", [var.app, var.env])
+}
+
+# define db subnet group
+/*resource "aws_db_subnet_group" "database" {
+  name        = lower(join("-", [var.env, var.db_name]))
+  description = "Database subnet group for ${var.db_name}"
+  subnet_ids  = data.aws_subnet_ids.private.ids
+
+  tags = merge(
+    {
+      "Name" = join("-", [var.env, var.db_name])
+    },
+    local.required_tags,
+  )
+}
+
+# define RDS
+module "rds" {
+  source  = "terraform.lululemon.app/lululemon/rds-lll/aws"
+  version = "1.5.4"
+
+  allocated_storage       = var.db_storage_size
+  application             = var.app
+  apply_immediately       = var.db_apply_immediately
+  backup_retention_period = var.db_backup_retention_period
+  backup_window           = var.db_backup_window
+  db_subnet_group_name    = aws_db_subnet_group.database.id
+  engine                  = var.db_engine_name
+  engine_version          = var.db_engine_version
+  environment             = var.env
+  identifier              = local.db_identifier
+  instance_class          = var.db_instance_class
+  kms_key_id              = aws_kms_key.shared.arn
+  license_model           = var.db_license_model
+  maintenance_window      = var.db_maintenance_window
+  max_allocated_storage   = var.db_max_allocated_storage
+  multi_az                = var.db_multi_az
+  name                    = var.db_name
+  password                = var.db_admin_password
+  port                    = var.db_port
+  region                  = local.region
+  username                = var.db_admin_user
+  vpc_security_group_ids  = [aws_security_group.tes_rds_db.id]
+  tags                    = local.required_tags
+}
+*/
